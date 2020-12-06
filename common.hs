@@ -1,11 +1,14 @@
 module Common
 ( strToInt
 , splitOn
+, enumerate
 , mapIntsFromFile
 , mapStringsFromFile
 ) where
 
 import System.Environment
+
+enumerate = zip [0..]
 
 strToInt :: String -> Int
 strToInt s = read s :: Int

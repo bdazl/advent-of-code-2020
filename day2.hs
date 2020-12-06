@@ -27,9 +27,9 @@ line s = (policy,chr,pass) where
         a = strToInt (head ab)
         b = strToInt (last ab)
 
-validStrPart1 :: String -> Bool
-validStrPart1 s = y where
-    y = part1Valid policy chr pass
+validStr :: String -> ((Int,Int) -> Char -> String) -> Bool
+validStr s f = y where
+    y = f policy chr pass
     (policy,chr,pass) = line s
 
 validStrPart2 :: String -> Bool
