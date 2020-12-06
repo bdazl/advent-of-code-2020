@@ -1,4 +1,5 @@
 import System.Environment
+import Common
 
 -- zipItem x [a, b, c] = [(x, a), (x, b), (x, c)]
 zipItem :: Int -> [Int] -> [(Int, Int)]
@@ -36,12 +37,5 @@ answer x = y where
     y = b*c
     (a, b, c) = findCorrect x
 
-rInt :: String -> Int
-rInt s = read s :: Int
-
 test = answer [1721, 979, 366, 299, 675, 1456]
-main = do 
-    f <- readFile "day1.txt"
-    let l = lines f
-    let i = map (rInt) l
-    print (answer i)
+main = do mapIntsFromFile answer "day1.txt"
