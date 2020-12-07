@@ -1,37 +1,34 @@
 import Common
 
-goodReq :: String -> (Bool,Bool)
-goodReq "byr" = (True, True)
-goodReq "iyr" = (True, True)
-goodReq "eyr" = (True, True)
-goodReq "hgt" = (True, True)
-goodReq "hcl" = (True, True)
-goodReq "ecl" = (True, True)
-goodReq "pid" = (True, True)
-goodReq "cid" = (True, False)
-goodReq s     = (False,False)
+validField :: String -> String -> Bool
+validField "byr" v = True
+validField "iyr" v = True
+validField "eyr" v = True
+validField "hgt" v = True
+validField "hcl" v = True
+validField "ecl" v = True
+validField "pid" v = True
+validField s _     = False
 
-distortOnFail (a,b) = a * (1-b)
+tuplSplit (a,b) = a b
+tuplConv x = (head x, last x)
+notCid x = fst x /= "cid"
+tuples = tuplConv . (splitOn ':')
+filterCids x = filter notCid (map tuples x)
+validateStrTuple x = validField (fst x) (snd x)
 
 solve :: [String] -> Int
 solve s = y where
-    y = length (filter (==7) conc)
+    y = length (filter (==7) sumValid)
 
-    -- hack to make sure that any key that is not valid will
-    -- distort the result in such a way that the condition fails
-    conc = map (\(a,b) -> a * (1-b)) (zip goodsum nogsum)
+    sumValid = map (sum . (map btoi)) validFields
+    validFields = map (map validateStrTuple) cidsRemoved
+
+    cidsRemoved = map filterCids split
 
     norm   = normalize s
     split  = map (splitOn ' ') norm
 
-    goreqTupl  = map (map (goodReq . head . (splitOn ':'))) split
-
-    good  = map (filter ((==True) . fst)) goreqTupl
-    goodAndReq = map (filter and) good
-    goodsum = map length goodAndReq
-
-    nogood = map (filter ((==False) . fst)) goreqTupl
-    nogsum = map length nogood    
 
 
 join :: String -> String -> String

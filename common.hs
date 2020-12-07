@@ -1,5 +1,6 @@
 module Common
 ( strToInt
+, btoi
 , splitOn
 , enumerate
 , mapIntsFromFile
@@ -9,6 +10,11 @@ module Common
 import System.Environment
 
 enumerate = zip [0..]
+
+btoi :: Bool -> Int
+btoi b = if b
+         then 1
+         else 0
 
 strToInt :: String -> Int
 strToInt s = read s :: Int
