@@ -1,5 +1,5 @@
 module Common
-( strToInt
+( atoi
 , btoi
 , splitOn
 , enumerate
@@ -16,8 +16,8 @@ btoi b = if b
          then 1
          else 0
 
-strToInt :: String -> Int
-strToInt s = read s :: Int
+atoi :: String -> Int
+atoi s = read s :: Int
 
 splitOn :: Char -> String -> [String]
 splitOn c s = y where 
@@ -38,7 +38,7 @@ mapIntsFromFile :: Show a => ([Int] -> a) -> String -> IO ()
 mapIntsFromFile f fname  = do
     file <- readFile fname
     let l = lines file
-    let i = map (strToInt) l
+    let i = map (atoi) l
     print (f i)
 
 mapStringsFromFile :: Show a => ([String] -> a) -> String -> IO ()
