@@ -1,6 +1,7 @@
 module Common
 ( atoi
 , btoi
+, modifyN
 , splitOn
 , enumerate
 , mapIntsFromFile
@@ -18,6 +19,12 @@ btoi b = if b
 
 atoi :: String -> Int
 atoi s = read s :: Int
+
+modifyN :: Int -> a -> [a] -> [a]
+modifyN n new l = y where
+    y = map (\(i,x) -> if i == n then new else x) enum
+    enum = zip [0..] l
+
 
 splitOn :: Char -> String -> [String]
 splitOn c s = y where 
