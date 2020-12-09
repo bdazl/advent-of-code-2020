@@ -1,6 +1,8 @@
 module Common
 ( atoi
 , btoi
+, splitN
+, dropN
 , modifyN
 , splitOn
 , enumerate
@@ -19,6 +21,13 @@ btoi b = if b
 
 atoi :: String -> Int
 atoi s = read s :: Int
+
+splitN :: Int -> [a] -> ([a], [a])
+splitN n l = (take n l, dropN n l)
+
+dropN :: Int -> [a] -> [a]
+dropN n l = map snd drop where
+    drop = dropWhile (\x -> fst x < n) (zip [0..] l)
 
 modifyN :: Int -> a -> [a] -> [a]
 modifyN n new l = y where
