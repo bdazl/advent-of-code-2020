@@ -9,6 +9,7 @@ module Computer
 , Operator (VoidOp, UnaryOp, BinaryOp)
 , Program (Program)
 , Instruction (Instruction, iname, args, op)
+, instruction
 , run
 , step
 , exec
@@ -76,6 +77,11 @@ data Instruction = Instruction { iname :: String
 instance Eq Instruction where
     (Instruction n0 a0 o0) == (Instruction n1 a1 o1) = n0 == n1 && a0 == a1
 
+instruction :: String -> [Int] -> Instruction
+instruction n args = Instruction { iname=n
+                                 , args=args
+                                 , op = findOp sysOps n
+                                 }
 
 -- SYSTEM IMPLEMENTATION
 
