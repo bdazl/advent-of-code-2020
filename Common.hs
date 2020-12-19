@@ -47,11 +47,7 @@ splitOn c s = y where
     
 -- Given a predicate, count the number of occorences in a list
 count :: (a -> Bool) -> [a] -> Int
-count _ [] = 0
-count pred (x:xs) = if pred x
-                    then count pred xs + 1
-                    else count pred xs
-
+count pred xs = length . (filter pred) $ xs
 
 mapIntsFromFile :: Show a => ([Int] -> a) -> String -> IO ()
 mapIntsFromFile f fname  = do
