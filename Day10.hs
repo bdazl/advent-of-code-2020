@@ -13,11 +13,6 @@ normalize :: [Int] -> [Int]
 normalize ns = 0:sorted ++ [last sorted + 3] where
                sorted = sort ns
 
-count :: (a -> Bool) -> [a] -> Int
-count _ [] = 0
-count pred (x:xs) = if pred x
-                    then 1 + count pred xs
-                    else count pred xs
 
 diffs :: [Int] -> [Int]
 diffs ns = (map (\(a,b) -> b - a)) . tuples $ ns

@@ -5,6 +5,7 @@ module Common
 , dropN
 , modifyN
 , splitOn
+, count
 , enumerate
 , mapIntsFromFile
 , mapStringsFromFile
@@ -49,6 +50,13 @@ splitOn c s = y where
                  then l ++ [""]
                  else (init l) ++ [((last l) ++ [p])]
     
+-- Given a predicate, count the number of occorences in a list
+count :: (a -> Bool) -> [a] -> Int
+count _ [] = 0
+count pred (x:xs) = if pred x
+                    then count pred xs + 1
+                    else count pred xs
+
 
 mapIntsFromFile :: Show a => ([Int] -> a) -> String -> IO ()
 mapIntsFromFile f fname  = do
