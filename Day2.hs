@@ -24,18 +24,18 @@ line s = (policy,chr,pass) where
     policySplit :: String -> (Int, Int)
     policySplit s = (a,b) where 
         ab = splitOn '-' s
-        a = strToInt (head ab)
-        b = strToInt (last ab)
+        a = atoi (head ab)
+        b = atoi (last ab)
 
-validStr :: String -> ((Int,Int) -> Char -> String) -> Bool
-validStr s f = y where
-    y = f policy chr pass
-    (policy,chr,pass) = line s
+validStrPart1 :: String -> Bool
+validStrPart1 s = part1Valid policy chr pass 
+                  where
+                  (policy,chr,pass) = line s
 
 validStrPart2 :: String -> Bool
-validStrPart2 s = y where
-    y = part2Valid policy chr pass
-    (policy,chr,pass) = line s
+validStrPart2 s = part2Valid policy chr pass
+                  where
+                  (policy,chr,pass) = line s
 
 
 solve1 :: [String] -> Int
