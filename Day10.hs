@@ -1,6 +1,65 @@
 import Data.List
 import Common
 
+data Tree = Node Int [Tree]
+          | Leaf Int
+          | Empty
+            deriving (Show, Eq)
+
+onlyL :: Tree -> [Int]
+onlyL Empty = []
+onlyL (Leaf n) = [n]
+onlyL (Node n t) = n : onlyL (head t)
+
+onlyR :: Tree -> [Int]
+onlyR Empty = []
+onlyR (Leaf n) = [n]
+onlyR (Node n t) = n : onlyR (last t)
+
+flatten :: Tree -> [[Int]]
+flatten Empty = []
+flatten (Leaf n) = [[n]]
+flatten (Node n t) = map ((:) n) folded
+                     where
+                     folded = foldl (++) [] allres
+                     allres = (map flatten t)
+
+filterSorted :: (a -> Bool) -> [a] -> [a]
+filterSorted _ [] = []
+filterSorted pred (x:xs) = if pred x
+                           then x : filterSorted pred xs
+                           else []
+
+-- Assumes sorted list
+possibilityTree :: Int -> [Int] -> Tree
+possibilityTree _ [] = Empty
+possibilityTree upper [n] = Leaf n
+possibilityTree upper (x:xs) = (Node x filtered)
+                               where
+                               filtered = filter goodNode children
+                               children = map (possibilityTree upper) lstZip
+
+                               -- Filter nodes that are missing the target
+                               goodNode :: Tree -> Bool
+                               goodNode Empty = False
+                               goodNode (Leaf n) = n == upper
+                               goodNode (Node n lst) = not (null lst) || n == upper
+
+                               lstZip = map fstLstDrop dropZip
+                               dropZip = zip [0..] less
+
+                               less = filterSorted (<=3) diff
+                               diff = map (\a -> a - x) xs
+
+                               -- Remove first n in (n, _) elements from xs
+                               fstLstDrop :: (Integer, Int) -> [Int]
+                               fstLstDrop (n, _) = drop (fromIntegral n) xs
+
+part2 :: [Int] -> Int
+part2 ns = length . flatten . possibilities . normalize $ ns
+           where
+           possibilities ns = possibilityTree (last ns) ns
+
 part1 :: [Int] -> Int
 part1 ns = diff1 * diff3
            where
