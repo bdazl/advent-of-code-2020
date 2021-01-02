@@ -1,20 +1,14 @@
 import Data.List
 import Common
+import Data.Map (Map)
+import qualified Data.Map as Map
 
 data Tree = Node Int [Tree]
           | Leaf Int
           | Empty
             deriving (Show, Eq)
 
-onlyL :: Tree -> [Int]
-onlyL Empty = []
-onlyL (Leaf n) = [n]
-onlyL (Node n t) = n : onlyL (head t)
-
-onlyR :: Tree -> [Int]
-onlyR Empty = []
-onlyR (Leaf n) = [n]
-onlyR (Node n t) = n : onlyR (last t)
+type TreeMap = Map.Map Int Tree
 
 flatten :: Tree -> [[Int]]
 flatten Empty = []
@@ -55,10 +49,13 @@ possibilityTree upper (x:xs) = (Node x filtered)
                                fstLstDrop :: (Integer, Int) -> [Int]
                                fstLstDrop (n, _) = drop (fromIntegral n) xs
 
+possibilities ns = possibilityTree (last ns) ns
+
+part2Long :: [Int] -> Int
+part2Long = length . flatten . possibilities . normalize
+
 part2 :: [Int] -> Int
-part2 ns = length . flatten . possibilities . normalize $ ns
-           where
-           possibilities ns = possibilityTree (last ns) ns
+part2 = head . revBranches . reverse . reachMap . normalize
 
 part1 :: [Int] -> Int
 part1 ns = diff1 * diff3
@@ -66,12 +63,51 @@ part1 ns = diff1 * diff3
     diff1 = count (==1) diffed
     diff3 = count (==3) diffed
     diffed = diffs . normalize $ ns
- 
+
+
+revBranches :: [Int] -> [Int]
+revBranches ns = recurse ns []
+                     where
+                     recurse :: [Int] -> [Int] -> [Int]
+                     recurse [] ls = ls
+                     recurse (n:ns) [] = recurse ns [1]
+                     recurse (n:ns) aux = recurse ns (sum (take n aux) : aux)
+
+-- Given a reach map, how many branches are reached by this element?
+-- Figure out why this is so damned slow
+branches :: [Int] -> [Int]
+branches [n] = [1]
+branches (n:ns) = sum (take n next) : next
+                  where
+                  next = branches ns
+
+-- How far does each element reach
+reachMap :: [Int] -> [Int]
+reachMap ns = map (\(a,b) -> reaches a b) nreduce
+              where
+              nreduce = zip ns reduced
+              reduced = map drp (zip [1..] ns)
+    
+              drp :: (Integer, Int) -> [Int]
+              drp (n, _) = drop (fromIntegral n) ns
+
+-- Count how many n can reach in list
+reaches :: Int -> [Int] -> Int
+reaches n  = length . filterSorted (<=3) . (map (\a -> a - n))
+
  -- normalize input (adds the 0 adapter to a the sorted input and at the end adds bigger adapter)
 normalize :: [Int] -> [Int]
 normalize ns = 0:sorted ++ [last sorted + 3] where
                sorted = sort ns
 
+
+diffChain :: [Int] -> [[Int]]
+diffChain [] = []
+diffChain [n] = []
+diffChain (n:ns) = [out] ++ (diffChain ns) where
+                   -- out = map diff ns
+                   -- diff = (\a -> a - n)
+                   out = diffs ns
 
 diffs :: [Int] -> [Int]
 diffs ns = (map (\(a,b) -> b - a)) . tuples $ ns
@@ -90,5 +126,5 @@ mini = [16, 10, 15, 5, 1, 11, 7, 19, 6, 12, 4]
 
 test = part1 mini == (7*5) && part1 small == (22*10)
 
-solve = part1
+solve = part2
 main = do mapIntsFromFile solve "day10.txt"
