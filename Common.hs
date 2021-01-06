@@ -12,7 +12,8 @@ module Common
 
 import System.Environment
 
-enumerate = zip [0..]
+enumerate :: [a] -> [(Int, a)]
+enumerate = zip (map fromIntegral [0..])
 
 btoi :: Bool -> Int
 btoi b = if b
