@@ -19,11 +19,11 @@ part1 ns = diff1 * diff3
 
 revBranches :: [Int] -> [Int]
 revBranches ns = recurse ns []
-                     where
-                     recurse :: [Int] -> [Int] -> [Int]
-                     recurse [] ls = ls
-                     recurse (n:ns) [] = recurse ns [1]
-                     recurse (n:ns) aux = recurse ns (sum (take n aux) : aux)
+                 where
+                 recurse :: [Int] -> [Int] -> [Int]
+                 recurse [] ls = ls
+                 recurse (n:ns) [] = recurse ns [1]
+                 recurse (n:ns) aux = recurse ns (sum (take n aux) : aux)
 
 -- How far does each element reach
 reachMap :: [Int] -> [Int]
